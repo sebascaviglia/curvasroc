@@ -1,39 +1,36 @@
-# History files
-.Rhistory
-.Rapp.history
+library("ROCR")
 
-# Session Data files
-.RData
+remove(data)
 
-# User-specific files
-.Ruserdata
+data1 <-  read.csv("../Desktop/sebastian/r studio/cheat sheet/roc-example-1.csv.txt")
+data2 <-  read.csv("../Desktop/sebastian/r studio/cheat sheet/roc-example-2.csv.txt")
 
-# Example code in package build process
-*-Ex.R
+# 0 <- fallo
+# 1 <- exito
 
-# Output files from R CMD build
-/*.tar.gz
+pred1 <- prediction(data1$prob, data1$class)
+perf1 <- performance(pred1, "tpr", "fpr")
+plot(perf1)
+lines(par()$usr[1:2], par()$usr[3:4])
 
-# Output files from R CMD check
-/*.Rcheck/
+prob.cuts1 <- data.frame(c(perf1@alpha.values[[1]],
+                           fpr= perf1@x.values[[1]],
+                           tpr= perf1@y.values[[1]]))
+# head
+head(prob.cuts1)
+# cola
+tail(prob.cuts1)
 
-# RStudio files
-.Rproj.user/
+#seleccionamos los verdaderos positvos p() > 0.8
 
-# produced vignettes
-vignettes/*.html
-vignettes/*.pdf
+prob.cuts1[prob.cuts1$tpr>=0.8,]
 
-# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
-.httr-oauth
 
-# knitr and R markdown default cache directories
-*_cache/
-/cache/
+# con data2
 
-# Temporary files created by R markdown
-*.utf8.md
-*.knit.md
+pred2 <- prediction(data2$prob, data2$class, label.ordering =  c("non-buyer", "buyer"))
+perf2 <- performance(pred2, "tpr", "fpr")
 
-# R Environment Variables
-.Renviron
+plot(perf2)
+lines(par()$usr[1:2], par()$usr[3:4])
+```
